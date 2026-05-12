@@ -362,7 +362,7 @@ const FamilyMedApp = () => {
                                 {isLow ? 'Запас критически мал!' : 'Остаток'}
                               </span>
                               <span className="text-xs font-black text-slate-600">
-                                {med.currentStock} шт. <span className="text-slate-300 font-normal">/ {daysLeft} дн.</span>
+                                {med.currentStock} {med.form === 'капли' ? 'кап.' : med.form === 'порошок' ? 'пак.' : 'шт.'} <span className="text-slate-300 font-normal">/ {daysLeft} дн.</span>
                               </span>
                             </div>
                             <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
