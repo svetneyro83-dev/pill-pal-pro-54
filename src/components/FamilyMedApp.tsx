@@ -7,9 +7,11 @@ import {
 } from 'lucide-react';
 
 type Member = { id: string; name: string; color: string };
+type MedForm = 'таблетки' | 'капли' | 'порошок';
 type Med = {
   id: number;
   name: string;
+  form: MedForm;
   dose: string;
   totalInPackage: string;
   frequency: number | string;
