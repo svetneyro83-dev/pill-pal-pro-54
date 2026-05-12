@@ -36,6 +36,7 @@ const FamilyMedApp = () => {
   const [view, setView] = useState<'schedule' | 'shopping'>('schedule');
   const [formData, setFormData] = useState({
     name: '',
+    form: 'таблетки' as MedForm,
     dose: '1',
     totalInPackage: '30',
     frequency: 1 as number | string,
