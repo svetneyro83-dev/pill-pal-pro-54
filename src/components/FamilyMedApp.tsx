@@ -344,8 +344,9 @@ const FamilyMedApp = () => {
                                   </span>
                                   <h3 className="font-bold text-xl text-slate-800">{med.name}</h3>
                                 </div>
-                                <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
-                                  <span className={colorObj.text}>Доза: {med.dose}</span>
+                                <div className="flex items-center gap-4 text-xs font-bold text-slate-400 flex-wrap">
+                                  <span className="uppercase tracking-tighter px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md">{med.form ?? 'таблетки'}</span>
+                                  <span className={colorObj.text}>Доза: {med.dose} {med.form === 'капли' ? 'кап.' : med.form === 'порошок' ? 'пак.' : 'шт.'}</span>
                                   <span className="flex items-center gap-1 uppercase tracking-tighter"><Utensils className="w-3 h-3" /> {med.timing}</span>
                                 </div>
                               </div>
