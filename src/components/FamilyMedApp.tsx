@@ -7,9 +7,11 @@ import {
 } from 'lucide-react';
 
 type Member = { id: string; name: string; color: string };
+type MedForm = 'таблетки' | 'капли' | 'порошок';
 type Med = {
   id: number;
   name: string;
+  form: MedForm;
   dose: string;
   totalInPackage: string;
   frequency: number | string;
@@ -34,6 +36,7 @@ const FamilyMedApp = () => {
   const [view, setView] = useState<'schedule' | 'shopping'>('schedule');
   const [formData, setFormData] = useState({
     name: '',
+    form: 'таблетки' as MedForm,
     dose: '1',
     totalInPackage: '30',
     frequency: 1 as number | string,
@@ -251,9 +254,30 @@ const FamilyMedApp = () => {
                       value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })}
                     />
                   </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider px-1">Форма</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {(['таблетки', 'капли', 'порошок'] as MedForm[]).map(f => (
+                        <button
+                          type="button"
+                          key={f}
+                          onClick={() => setFormData({ ...formData, form: f })}
+                          className={`py-2.5 rounded-2xl text-xs font-bold capitalize transition-all border ${
+                            formData.form === f
+                              ? 'bg-indigo-600 text-white border-indigo-600 shadow'
+                              : 'bg-slate-50 text-slate-500 border-slate-100 hover:bg-slate-100'
+                          }`}
+                        >
+                          {f}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider px-1">Доза</label>
+                      <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider px-1">
+                        Доза ({formData.form === 'капли' ? 'кап.' : formData.form === 'порошок' ? 'пак.' : 'шт.'})
+                      </label>
                       <input
                         type="number" step="0.5"
                         className="w-full p-3 rounded-2xl border border-slate-100 bg-slate-50 outline-none transition-all"
@@ -270,13 +294,16 @@ const FamilyMedApp = () => {
                     </div>
                   </div>
                   <div className="bg-amber-50 p-4 rounded-[1.5rem] border border-amber-100">
-                    <label className="text-[10px] font-bold uppercase text-amber-600 mb-1 block">Всего в упаковке (шт)</label>
+                    <label className="text-[10px] font-bold uppercase text-amber-600 mb-1 block">
+                      Всего в упаковке ({formData.form === 'капли' ? 'кап.' : formData.form === 'порошок' ? 'пак.' : 'шт.'})
+                    </label>
                     <input
                       type="number"
                       className="w-full p-2.5 rounded-xl border border-amber-200 outline-none text-sm font-medium"
                       value={formData.totalInPackage} onChange={e => setFormData({ ...formData, totalInPackage: e.target.value })}
                     />
                   </div>
+
                   <button className="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-95">
                     Добавить в список
                   </button>
@@ -317,8 +344,9 @@ const FamilyMedApp = () => {
                                   </span>
                                   <h3 className="font-bold text-xl text-slate-800">{med.name}</h3>
                                 </div>
-                                <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
-                                  <span className={colorObj.text}>Доза: {med.dose}</span>
+                                <div className="flex items-center gap-4 text-xs font-bold text-slate-400 flex-wrap">
+                                  <span className="uppercase tracking-tighter px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md">{med.form ?? 'таблетки'}</span>
+                                  <span className={colorObj.text}>Доза: {med.dose} {med.form === 'капли' ? 'кап.' : med.form === 'порошок' ? 'пак.' : 'шт.'}</span>
                                   <span className="flex items-center gap-1 uppercase tracking-tighter"><Utensils className="w-3 h-3" /> {med.timing}</span>
                                 </div>
                               </div>
@@ -334,7 +362,7 @@ const FamilyMedApp = () => {
                                 {isLow ? 'Запас критически мал!' : 'Остаток'}
                               </span>
                               <span className="text-xs font-black text-slate-600">
-                                {med.currentStock} шт. <span className="text-slate-300 font-normal">/ {daysLeft} дн.</span>
+                                {med.currentStock} {med.form === 'капли' ? 'кап.' : med.form === 'порошок' ? 'пак.' : 'шт.'} <span className="text-slate-300 font-normal">/ {daysLeft} дн.</span>
                               </span>
                             </div>
                             <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
