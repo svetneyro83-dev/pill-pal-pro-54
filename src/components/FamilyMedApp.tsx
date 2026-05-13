@@ -146,6 +146,19 @@ const FamilyMedApp = () => {
   };
 
   const deleteMed = (id: number) => setMeds(meds.filter(m => m.id !== id));
+  const deleteMember = (id: string) => {
+    if (family.length <= 1) return;
+    const member = family.find(m => m.id === id);
+    const medCount = meds.filter(m => m.memberId === id).length;
+    const msg = medCount > 0
+      ? `Удалить профиль "${member?.name}" и ${medCount} назначений?`
+      : `Удалить профиль "${member?.name}"?`;
+    if (!confirm(msg)) return;
+    setMeds(meds.filter(m => m.memberId !== id));
+    setFamily(family.filter(m => m.id !== id));
+    if (activeMemberId === id) setActiveMemberId('all');
+    showMessage('Профиль удалён', 'success');
+  };
   const getMember = (id: string) => family.find(m => m.id === id) || family[0];
 
   const getDaysLeft = (med: Med) => {
