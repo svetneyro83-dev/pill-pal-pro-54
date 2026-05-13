@@ -1,7 +1,7 @@
 name: Deploy to GitHub Pages
 on:
   push:
-    branches: [ main ] # или master, если ваша ветка так называется
+    branches: [ main ]
 permissions:
   contents: write
 jobs:
@@ -10,11 +10,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install and Build
-        run: |
-          npm install
-          npm run build
+
+      - name: Install Dependencies
+        # Добавляем флаг --force, чтобы точно установились все плагины Vite
+        run: npm install --force 
+
+      - name: Build
+        # Собираем напрямую через npx, чтобы не зависеть от скриптов в package.json
+        run: npx vite build --base=/pill-pal-pro-54/
+
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist # папка, которую создал Vite
+          folder: dist
