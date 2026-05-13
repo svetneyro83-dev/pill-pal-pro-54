@@ -36,14 +36,18 @@ const FamilyMedApp = () => {
   const [message, setMessage] = useState({ text: '', type: '' });
   const [isAddingMember, setIsAddingMember] = useState(false);
   const [newMemberName, setNewMemberName] = useState('');
-  const [view, setView] = useState<'schedule' | 'shopping'>('schedule');
+  const [view, setView] = useState<'schedule' | 'shopping' | 'calendar'>('schedule');
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  });
   const [formData, setFormData] = useState({
     name: '',
     form: 'таблетки' as MedForm,
     dose: '1',
     totalInPackage: '30',
     frequency: 1 as number | string,
-    timing: 'после еды',
+    timing: 'после еды' as Timing,
     duration: 7,
     memberId: 'default',
     startDate: new Date().toISOString().split('T')[0]
