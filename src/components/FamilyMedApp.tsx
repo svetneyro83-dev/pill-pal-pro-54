@@ -3,8 +3,11 @@ import {
   Plus, Trash2, CalendarDays, Pill,
   Utensils, CheckCircle2, Users,
   Activity, UserPlus,
-  ShoppingCart, Copy, Check
+  ShoppingCart, Copy, Check, Calendar as CalendarIcon, ExternalLink, Download
 } from 'lucide-react';
+
+const TIMINGS = ['до еды', 'во время еды', 'после еды'] as const;
+type Timing = typeof TIMINGS[number];
 
 type Member = { id: string; name: string; color: string };
 type MedForm = 'таблетки' | 'капли' | 'порошок';
