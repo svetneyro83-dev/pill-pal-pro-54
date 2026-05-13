@@ -1,0 +1,9 @@
+meta:
+  name: pill-pal-pro
+  toolchain:
+    name: docker
+    version: latest
+build:
+  dockerfile: Dockerfile
+deploy:
+  port: 80
