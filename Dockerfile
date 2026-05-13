@@ -3,13 +3,15 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+# Собираем проект
 RUN npm run build
+# Эта строка покажет нам в логах список файлов, чтобы мы увидели название папки
+RUN ls -la
 
 FROM nginx:stable-alpine
-# Эта команда ищет index.html в dist или build и копирует его куда нужно
+RUN rm -rf /usr/share/nginx/html/*
+# Пробуем скопировать содержимое папки dist. 
+# Если папка называется иначе, мы увидим это в логах после ls -la
 COPY --from=build /app/dist /usr/share/nginx/html
-# Если папка называется build, а не dist, раскомментируйте строку ниже (удалите #):
-# COPY --from=build /app/build /usr/share/nginx/html
-
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
