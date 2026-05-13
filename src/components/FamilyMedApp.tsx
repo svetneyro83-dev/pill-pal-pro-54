@@ -510,7 +510,9 @@ const FamilyMedApp = () => {
               )}
             </div>
           </div>
-        ) : (
+        )}
+
+        {view === 'shopping' && (
           <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-5">
             <div className="bg-white rounded-[3rem] border border-slate-200 shadow-xl overflow-hidden">
               <div className="bg-slate-900 p-10 text-white flex justify-between items-center">
