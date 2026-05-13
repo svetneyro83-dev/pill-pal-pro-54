@@ -3,7 +3,8 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 
 export default defineConfig({
-  base: '/pill-pal-pro-54/',
+  // Самая важная строка, чтобы пути к стилям стали правильными:
+  base: "/pill-pal-pro-54/", 
   plugins: [react()],
   resolve: {
     alias: {
