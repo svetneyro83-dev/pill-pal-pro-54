@@ -11,14 +11,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: |
-          npm install --force
-          # Устанавливаем недостающий плагин вручную, чтобы он точно был
-          npm install @vitejs/plugin-react-swc --save-dev
+      - name: Install
+        run: npm install --force
 
       - name: Build
-        run: npx vite build --base=/pill-pal-pro-54/
+        run: npx vite build
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
