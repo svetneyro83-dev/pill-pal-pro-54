@@ -175,6 +175,106 @@ const FamilyMedApp = () => {
     document.body.removeChild(textArea);
   };
 
+  // ---- Calendar / Google Calendar helpers ----
+  const timingHour = (t: string, idx: number, total: number) => {
+    // base hours by timing, distributed across the day
+    const baseTimes = total === 1 ? [9] : total === 2 ? [9, 21] : total === 3 ? [9, 14, 21] : Array.from({ length: total }, (_, i) => 8 + Math.round(i * (14 / (total - 1))));
+    const h = baseTimes[idx] ?? 9;
+    if (t === 'до еды') return Math.max(0, h - 1);
+    if (t === 'во время еды') return h;
+    return h; // после еды – тот же час, но смещаем минуты
+  };
+  const timingMinute = (t: string) => t === 'после еды' ? 30 : 0;
+
+  const medDates = (med: Med) => {
+    const start = new Date(med.startDate + 'T00:00:00');
+    return Array.from({ length: med.duration }, (_, i) => {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      return d;
+    });
+  };
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const fmtICS = (d: Date) => `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+
+  const buildICS = (medsToExport: Med[]) => {
+    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//FamilyMed//RU'];
+    medsToExport.forEach(med => {
+      const total = parseInt(med.frequency as string) || 1;
+      for (let i = 0; i < total; i++) {
+        const start = new Date(med.startDate + 'T00:00:00');
+        start.setHours(timingHour(med.timing, i, total), timingMinute(med.timing), 0, 0);
+        const end = new Date(start.getTime() + 15 * 60000);
+        lines.push(
+          'BEGIN:VEVENT',
+          `UID:${med.id}-${i}@familymed`,
+          `DTSTAMP:${fmtICS(new Date())}`,
+          `DTSTART:${fmtICS(start)}`,
+          `DTEND:${fmtICS(end)}`,
+          `RRULE:FREQ=DAILY;COUNT=${med.duration}`,
+          `SUMMARY:💊 ${med.name} — ${getMember(med.memberId).name}`,
+          `DESCRIPTION:Доза: ${med.dose} (${med.form})\\n${med.timing}\\nПрием ${i + 1} из ${total}`,
+          'END:VEVENT'
+        );
+      }
+    });
+    lines.push('END:VCALENDAR');
+    return lines.join('\r\n');
+  };
+
+  const downloadICS = (med?: Med) => {
+    const ics = buildICS(med ? [med] : meds);
+    const blob = new Blob([ics], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = med ? `${med.name}.ics` : 'familymed-schedule.ics';
+    a.click();
+    URL.revokeObjectURL(url);
+    showMessage('Календарь скачан (.ics)', 'success');
+  };
+
+  const googleCalendarUrl = (med: Med, doseIdx: number) => {
+    const total = parseInt(med.frequency as string) || 1;
+    const start = new Date(med.startDate + 'T00:00:00');
+    start.setHours(timingHour(med.timing, doseIdx, total), timingMinute(med.timing), 0, 0);
+    const end = new Date(start.getTime() + 15 * 60000);
+    const dates = `${fmtICS(start)}/${fmtICS(end)}`;
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: `💊 ${med.name} — ${getMember(med.memberId).name}`,
+      dates,
+      details: `Доза: ${med.dose} (${med.form})\n${med.timing}\nПрием ${doseIdx + 1} из ${total}`,
+      recur: `RRULE:FREQ=DAILY;COUNT=${med.duration}`
+    });
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  };
+
+  const addAllToGoogle = (med: Med) => {
+    const total = parseInt(med.frequency as string) || 1;
+    for (let i = 0; i < total; i++) {
+      window.open(googleCalendarUrl(med, i), '_blank');
+    }
+  };
+
+  // Calendar grid for current month
+  const monthGrid = () => {
+    const y = calendarMonth.getFullYear();
+    const m = calendarMonth.getMonth();
+    const first = new Date(y, m, 1);
+    const last = new Date(y, m + 1, 0);
+    const startOffset = (first.getDay() + 6) % 7; // Mon = 0
+    const days: (Date | null)[] = [];
+    for (let i = 0; i < startOffset; i++) days.push(null);
+    for (let d = 1; d <= last.getDate(); d++) days.push(new Date(y, m, d));
+    while (days.length % 7 !== 0) days.push(null);
+    return days;
+  };
+  const sameDay = (a: Date, b: Date) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  const medsOnDay = (date: Date) => (activeMemberId === 'all' ? meds : meds.filter(x => x.memberId === activeMemberId))
+    .filter(med => medDates(med).some(d => sameDay(d, date)));
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] antialiased pb-20 font-sans">
       <div className="max-w-6xl mx-auto px-4 pt-6 md:pt-10">
