@@ -332,14 +332,27 @@ const FamilyMedApp = () => {
                     Все
                   </button>
                   {family.map(m => (
-                    <button
+                    <div
                       key={m.id}
-                      onClick={() => setActiveMemberId(m.id)}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${activeMemberId === m.id ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-slate-50 text-slate-500 border border-slate-100'}`}
+                      className={`group inline-flex items-center rounded-xl text-xs font-bold transition-all border ${activeMemberId === m.id ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-slate-50 text-slate-500 border-slate-100'}`}
                     >
-                      <div className={`w-2 h-2 rounded-full ${colors.find(c => c.name === m.color)?.bg}`} />
-                      {m.name}
-                    </button>
+                      <button
+                        onClick={() => setActiveMemberId(m.id)}
+                        className="px-4 py-2 flex items-center gap-2"
+                      >
+                        <div className={`w-2 h-2 rounded-full ${colors.find(c => c.name === m.color)?.bg}`} />
+                        {m.name}
+                      </button>
+                      {family.length > 1 && (
+                        <button
+                          onClick={() => deleteMember(m.id)}
+                          title="Удалить профиль"
+                          className="px-2 py-2 text-slate-300 hover:text-rose-500 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
