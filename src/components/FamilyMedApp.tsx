@@ -293,6 +293,12 @@ const FamilyMedApp = () => {
               <CalendarDays className="w-4 h-4" /> График
             </button>
             <button
+              onClick={() => setView('calendar')}
+              className={`px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${view === 'calendar' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
+            >
+              <CalendarIcon className="w-4 h-4" /> Календарь
+            </button>
+            <button
               onClick={() => setView('shopping')}
               className={`px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 relative ${view === 'shopping' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:bg-slate-50'}`}
             >
