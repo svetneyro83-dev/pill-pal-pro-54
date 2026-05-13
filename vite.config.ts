@@ -4,7 +4,7 @@ import path from "path";
 
 export default defineConfig({
   // Самая важная строка, чтобы пути к стилям стали правильными:
-  base: "/pill-pal-pro-54/", 
+  base: "./pill-pal-pro-54/", 
   plugins: [react()],
   resolve: {
     alias: {
