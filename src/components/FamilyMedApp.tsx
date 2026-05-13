@@ -312,7 +312,7 @@ const FamilyMedApp = () => {
           </nav>
         </div>
 
-        {view === 'schedule' ? (
+        {view === 'schedule' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-4 space-y-6">
               <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
