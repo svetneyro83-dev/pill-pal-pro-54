@@ -406,6 +406,45 @@ const FamilyMedApp = () => {
                       />
                     </div>
                   </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider px-1 flex items-center gap-1">
+                      <Utensils className="w-3 h-3" /> Связь с едой
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {TIMINGS.map(t => (
+                        <button
+                          type="button"
+                          key={t}
+                          onClick={() => setFormData({ ...formData, timing: t })}
+                          className={`py-2.5 px-1 rounded-2xl text-[11px] font-bold capitalize transition-all border ${
+                            formData.timing === t
+                              ? 'bg-emerald-600 text-white border-emerald-600 shadow'
+                              : 'bg-slate-50 text-slate-500 border-slate-100 hover:bg-slate-100'
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider px-1">Курс (дней)</label>
+                      <input
+                        type="number" min="1" max="180"
+                        className="w-full p-3 rounded-2xl border border-slate-100 bg-slate-50 outline-none transition-all"
+                        value={formData.duration} onChange={e => setFormData({ ...formData, duration: parseInt(e.target.value) || 1 })}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider px-1">Старт</label>
+                      <input
+                        type="date"
+                        className="w-full p-3 rounded-2xl border border-slate-100 bg-slate-50 outline-none transition-all text-sm"
+                        value={formData.startDate} onChange={e => setFormData({ ...formData, startDate: e.target.value })}
+                      />
+                    </div>
+                  </div>
                   <div className="bg-amber-50 p-4 rounded-[1.5rem] border border-amber-100">
                     <label className="text-[10px] font-bold uppercase text-amber-600 mb-1 block">
                       Всего в упаковке ({formData.form === 'капли' ? 'кап.' : formData.form === 'порошок' ? 'пак.' : 'шт.'})
