@@ -12,11 +12,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Dependencies
-        # Добавляем флаг --force, чтобы точно установились все плагины Vite
-        run: npm install --force 
+        run: |
+          npm install --force
+          # Устанавливаем недостающий плагин вручную, чтобы он точно был
+          npm install @vitejs/plugin-react-swc --save-dev
 
       - name: Build
-        # Собираем напрямую через npx, чтобы не зависеть от скриптов в package.json
         run: npx vite build --base=/pill-pal-pro-54/
 
       - name: Deploy
